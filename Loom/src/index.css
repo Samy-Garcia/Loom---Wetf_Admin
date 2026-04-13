@@ -1,0 +1,35 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f1f5f9;
+}
+
+.main {
+  margin-left: 260px;
+  flex: 1;
+  min-width: 0;
+  overflow-x: hidden;
+}
+
+.content {
+  margin-top: 64px;
+  padding: 24px;
+  overflow-x: hidden;
+}
+
+.page-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1a2238;
+  margin-bottom: 24px;
+}

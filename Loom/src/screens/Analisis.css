@@ -1,0 +1,346 @@
+.analisis-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+
+.analisis-titulo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1a2238;
+}
+
+.analisis-sub {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  margin-top: 4px;
+}
+
+.btn-add {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-add:hover {
+  background-color: #2563eb;
+}
+
+/* Tarjetas superiores */
+.stats-top {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.stat-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+.stat-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.stat-icon-box {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+
+.stat-icon-box.blue { background-color: #eff6ff; }
+.stat-icon-box.green { background-color: #f0fdf4; }
+.stat-icon-box.orange { background-color: #fff7ed; }
+
+.stat-dots {
+  color: #94a3b8;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.stat-card-label {
+  font-size: 0.82rem;
+  color: #94a3b8;
+  margin-bottom: 6px;
+}
+
+.stat-card-number {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1a2238;
+  margin-bottom: 6px;
+}
+
+.stat-card-sub {
+  font-size: 0.78rem;
+  color: #94a3b8;
+}
+
+.green-text {
+  color: #16a34a !important;
+  font-weight: 600;
+}
+
+/* Grid de 2 columnas */
+.analisis-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+/* Tarjeta de gráfica */
+.chart-card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.tab-group {
+  display: flex;
+  gap: 4px;
+}
+
+.tab-btn {
+  background: none;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  color: #64748b;
+  cursor: pointer;
+}
+
+.tab-btn:hover {
+  background-color: #f1f5f9;
+}
+
+.tab-btn.active {
+  background-color: #3b82f6;
+  color: white;
+  font-weight: 600;
+}
+
+.ver-mas {
+  color: #3b82f6;
+  font-size: 0.82rem;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+/* Sin stock */
+.sin-stock-card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.sin-stock-item {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.sin-stock-img {
+  font-size: 2rem;
+  width: 52px;
+  height: 52px;
+  background-color: #f1f5f9;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sin-stock-nombre {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #1a2238;
+}
+
+.sin-stock-code {
+  font-size: 0.78rem;
+  color: #94a3b8;
+  margin-bottom: 6px;
+}
+
+.sin-stock-link {
+  color: #3b82f6;
+  font-size: 0.82rem;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.ultimos-exitos {
+  border-top: 1px solid #f1f5f9;
+  padding-top: 16px;
+}
+
+.exitos-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #1a2238;
+  margin-bottom: 6px;
+}
+
+.exitos-sub {
+  font-size: 0.82rem;
+  color: #64748b;
+}
+
+/* Productos más vendidos */
+.prod-vendido-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 0;
+  border-top: 1px solid #f1f5f9;
+}
+
+.prod-vendido-img {
+  font-size: 1.8rem;
+  width: 48px;
+  height: 48px;
+  background-color: #f1f5f9;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.prod-vendido-info {
+  flex: 1;
+}
+
+.prod-vendido-nombre {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #1a2238;
+}
+
+.prod-vendido-precio {
+  font-size: 0.78rem;
+  color: #94a3b8;
+}
+
+.prod-vendido-cant {
+  text-align: right;
+}
+
+.prod-vendido-num {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1a2238;
+}
+
+.prod-vendido-sold {
+  font-size: 0.72rem;
+  color: #94a3b8;
+}
+
+/* Últimos pedidos */
+.pedido-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 0;
+  border-top: 1px solid #f1f5f9;
+}
+
+.pedido-avatar {
+  width: 40px;
+  height: 40px;
+  background-color: #e2e8f0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.pedido-info {
+  flex: 1;
+}
+
+.pedido-id {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #1a2238;
+}
+
+.pedido-fecha {
+  font-size: 0.78rem;
+  color: #94a3b8;
+}
+
+.pedido-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.pedido-total {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #1a2238;
+}
+
+.btn-editar-sm {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  padding: 4px 14px;
+  border-radius: 5px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-editar-sm:hover {
+  background-color: #2563eb;
+}
+
+/* Ingresos */
+.ingresos-total {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1a2238;
+  margin-top: 4px;
+}
+
+.ingresos-sub {
+  font-size: 0.78rem;
+  color: #94a3b8;
+  margin-bottom: 16px;
+}
