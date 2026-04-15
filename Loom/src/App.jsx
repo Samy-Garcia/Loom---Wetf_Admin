@@ -4,6 +4,7 @@ import Proveedores from './screens/Proveedores'
 import Ofertas from './screens/Ofertas'
 import Analisis from './screens/Analisis'
 import Productos from './screens/Productos'
+import Inventario from './screens/Inventario'
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/proveedores" element={<Proveedores />} />
         <Route path="/ofertas" element={<Ofertas />} />
         <Route path="/productos" element={<Productos />} />
+        <Route path="/inventario" element={<Inventario />} />
       </Routes>
     </BrowserRouter>
   )
