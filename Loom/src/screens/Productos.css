@@ -1,0 +1,198 @@
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.btn-add {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-add:hover {
+  background-color: #2563eb;
+}
+
+/* Buscador grande */
+.search-box-lg {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 14px 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+
+.search-box-lg input {
+  border: none;
+  outline: none;
+  font-size: 0.95rem;
+  color: #64748b;
+  width: 100%;
+}
+
+/* Tarjetas estadísticas */
+.stats-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.stat-card-p {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+.stat-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.stat-icon-box {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+
+.stat-icon-box.blue { background-color: #eff6ff; }
+.stat-icon-box.red { background-color: #fff1f2; }
+
+.stat-edit {
+  font-size: 0.9rem;
+  color: #3b82f6;
+  cursor: pointer;
+}
+
+.stat-dots {
+  color: #94a3b8;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.stat-number-p {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1a2238;
+  margin-bottom: 4px;
+}
+
+.stat-label-p {
+  font-size: 0.82rem;
+  color: #94a3b8;
+}
+
+/* Tabla */
+.tabla-card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+.section-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1a2238;
+  margin-bottom: 16px;
+}
+
+.productos-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.productos-table th {
+  text-align: left;
+  font-size: 0.72rem;
+  color: #94a3b8;
+  padding: 8px 16px;
+  letter-spacing: 0.05em;
+}
+
+.productos-table td {
+  padding: 16px;
+  border-top: 1px solid #f1f5f9;
+  font-size: 0.88rem;
+  color: #475569;
+}
+
+.producto-info {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.producto-img-box {
+  width: 48px;
+  height: 48px;
+  background-color: #f1f5f9;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  flex-shrink: 0;
+}
+
+.producto-nombre {
+  font-weight: 600;
+  color: #1a2238;
+}
+
+/* Badges */
+.badge-estado {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+
+.badge-disponible {
+  background-color: #dcfce7;
+  color: #16a34a;
+}
+
+.badge-stockbajo {
+  background-color: #fff7ed;
+  color: #ea580c;
+}
+
+.badge-agotado {
+  background-color: #fee2e2;
+  color: #dc2626;
+}
+
+/* Botón editar */
+.btn-editar {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-editar:hover {
+  background-color: #2563eb;
+}
