@@ -1,112 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Sidebar from '../components/Sidebar'
 import Navbar from '../components/Navbar'
 import './Proveedores.css'
-
-const proveedores = [
-  {
-    id: 1,
-    nombre: 'Diamond Supply',
-    email: 'jorge@diamondsupply.com',
-    empresa: 'Textiles',
-    telefono: '+1 (305) 555-5378',
-    estado: 'Examen',
-    avatar: 'D',
-    contacto: 'Jorge López',
-    direccion: 'Pasadena 153',
-    ciudad: 'Viloria, FL, EE. UU',
-    productos: [
-      { nombre: 'Black Leather', precio: '$95.00', stock: 20 },
-      { nombre: 'Hoodie', precio: '$90.00', stock: 20 },
-      { nombre: 'Pants', precio: '$65.00', stock: 20 },
-      { nombre: 'Fur Jacket', precio: '$90.00', stock: 20 },
-    ],
-    pedidos: [
-      { id: '#0235', fecha: '18 Abr 2024', estado: 'Recibido', cantidad: '$6,900.00', total: '$6,900.00' },
-      { id: '#0254', fecha: '10 Abr 2024', estado: 'En camino', cantidad: '$4,600.00', total: '$4,800.00' },
-      { id: '#0253', fecha: '5 Abr 2024', estado: 'Pendiente', cantidad: '$6,450.00', total: '$6,450.00' },
-    ],
-    evaluacion: { porcentaje: 92, entrega: '5 días', categorias: ['Hoodies', 'Pantas', 'Zip Up Hoodies'] },
-  },
-  {
-    id: 2,
-    nombre: 'Black Thread Factory',
-    email: 'contact@blackthread.com',
-    empresa: 'Manufactura',
-    telefono: '+1 (305) 555-5388',
-    estado: 'Confiable',
-    avatar: 'B',
-    contacto: 'María Rodríguez',
-    direccion: 'Calle 45 #12',
-    ciudad: 'Miami, FL, EE. UU',
-    productos: [
-      { nombre: 'Black Tee', precio: '$40.00', stock: 15 },
-      { nombre: 'Cargo Pants', precio: '$70.00', stock: 10 },
-    ],
-    pedidos: [
-      { id: '#0210', fecha: '1 Mar 2024', estado: 'Recibido', cantidad: '$3,200.00', total: '$3,200.00' },
-    ],
-    evaluacion: { porcentaje: 98, entrega: '3 días', categorias: ['Camisetas', 'Pantalones'] },
-  },
-  {
-    id: 3,
-    nombre: 'Urban Street Supply',
-    email: 'info@urbanstreet.com',
-    empresa: 'Distribución',
-    telefono: '+1 (305) 555-5378',
-    estado: 'Confiable',
-    avatar: 'U',
-    contacto: 'Carlos Méndez',
-    direccion: 'Av. Principal 88',
-    ciudad: 'Orlando, FL, EE. UU',
-    productos: [
-      { nombre: 'Snapback', precio: '$30.00', stock: 25 },
-      { nombre: 'Windbreaker', precio: '$85.00', stock: 8 },
-    ],
-    pedidos: [
-      { id: '#0198', fecha: '15 Feb 2024', estado: 'Recibido', cantidad: '$2,500.00', total: '$2,500.00' },
-    ],
-    evaluacion: { porcentaje: 95, entrega: '4 días', categorias: ['Accesorios', 'Chaquetas'] },
-  },
-  {
-    id: 4,
-    nombre: 'Blue Stitch Manufacturing',
-    email: 'sales@bluestitch.com',
-    empresa: 'Textiles',
-    telefono: '+1 (305) 555-4321',
-    estado: 'Pendiente',
-    avatar: 'B',
-    contacto: 'Ana Gómez',
-    direccion: 'Boulevard 22',
-    ciudad: 'Tampa, FL, EE. UU',
-    productos: [
-      { nombre: 'Denim Jacket', precio: '$110.00', stock: 12 },
-    ],
-    pedidos: [
-      { id: '#0301', fecha: '20 Abr 2024', estado: 'Pendiente', cantidad: '$5,000.00', total: '$5,000.00' },
-    ],
-    evaluacion: { porcentaje: 75, entrega: '7 días', categorias: ['Denim', 'Casualwear'] },
-  },
-  {
-    id: 5,
-    nombre: 'SkyFabric Imports',
-    email: 'laura@skyfabric.com',
-    empresa: 'Importación',
-    telefono: '+1 (305) 555-5378',
-    estado: 'Retrasado',
-    avatar: 'S',
-    contacto: 'Laura Kim',
-    direccion: 'Harbor St. 9',
-    ciudad: 'Jacksonville, FL, EE. UU',
-    productos: [
-      { nombre: 'Silk Shirt', precio: '$75.00', stock: 5 },
-    ],
-    pedidos: [
-      { id: '#0289', fecha: '2 Abr 2024', estado: 'Retrasado', cantidad: '$1,800.00', total: '$1,800.00' },
-    ],
-    evaluacion: { porcentaje: 60, entrega: '10 días', categorias: ['Importados', 'Lujo'] },
-  },
-]
 
 const estadoClass = {
   Examen: 'badge-examen',
@@ -115,21 +10,162 @@ const estadoClass = {
   Retrasado: 'badge-retrasado',
 }
 
-const pedidoClass = {
-  Recibido: 'pedido-recibido',
-  'En camino': 'pedido-camino',
-  Pendiente: 'pedido-pendiente',
-  Retrasado: 'pedido-retrasado',
+function ModalAgregar({ onClose, onGuardado }) {
+  const [form, setForm] = useState({
+  name: '', email: '', phone: '', address: ''
+})
+  const [imagen, setImagen] = useState(null)
+  const [preview, setPreview] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value })
+  }
+  
+  const handleImagen = (e) => {
+  const file = e.target.files[0]
+  if (file) {
+    setImagen(file)
+    setPreview(URL.createObjectURL(file))
+  }
+  }
+
+  const handleGuardar = async () => {
+  if (!form.name || !form.email) {
+    setError('Nombre y correo son obligatorios')
+    return
+  }
+  if (!imagen) {
+    setError('La imagen es obligatoria')
+    return
+  }
+  setLoading(true)
+  setError('')
+  try {
+    const formData = new FormData()
+    formData.append('name', form.name)
+    formData.append('email', form.email)
+    formData.append('phone', form.phone)
+    formData.append('address', form.address)
+    formData.append('image', imagen)
+
+    const res = await fetch('http://localhost:4000/api/suppliers', {
+      method: 'POST',
+      credentials: 'include',
+      body: formData,
+    })
+    const data = await res.json()
+    if (!res.ok) {
+      setError(data.message || 'Error al guardar')
+    } else {
+      onGuardado()
+      onClose()
+    }
+  } catch (err) {
+    setError('No se pudo conectar con el servidor')
+  } finally {
+    setLoading(false)
+  }
+}
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-card" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-header">
+          <h2>Añadir Proveedor</h2>
+          <button className="modal-close" onClick={onClose}>✕</button>
+        </div>
+
+        <div className="modal-body">
+          <div className="form-group">
+            <label>Nombre *</label>
+            <input name="name" placeholder="Nombre del proveedor" value={form.name} onChange={handleChange} />
+          </div>
+          <div className="form-group">
+            <label>Correo *</label>
+            <input name="email" placeholder="correo@ejemplo.com" value={form.email} onChange={handleChange} />
+          </div>
+          <div className="form-group">
+            <label>Teléfono</label>
+            <input name="phone" placeholder="+1 (000) 000-0000" value={form.phone} onChange={handleChange} />
+          </div>
+          <div className="form-group">
+            <label>Dirección</label>
+            <input name="address" placeholder="Dirección" value={form.address} onChange={handleChange} />
+          </div>
+          <div className="form-group">
+  <label>Imagen</label>
+  <div className="img-upload" onClick={() => document.getElementById('imgInput').click()}>
+    {preview
+      ? <img src={preview} alt="preview" className="img-preview" />
+      : <span>📷 Click para subir imagen</span>
+    }
+  </div>
+  <input
+    id="imgInput"
+    type="file"
+    accept="image/*"
+    style={{ display: 'none' }}
+    onChange={handleImagen}
+  />
+</div>
+          <div className="form-group">
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                checked={form.isVerified}
+                onChange={(e) => setForm({ ...form, isVerified: e.target.checked })}
+              />
+              Proveedor verificado
+            </label>
+          </div>
+          {error && <p className="error-msg">{error}</p>}
+        </div>
+
+        <div className="modal-footer">
+          <button className="btn-cancelar" onClick={onClose}>Cancelar</button>
+          <button className="btn-add" onClick={handleGuardar} disabled={loading}>
+            {loading ? 'Guardando...' : 'Guardar'}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
 }
 
 function Proveedores() {
   const [search, setSearch] = useState('')
-  const [seleccionado, setSeleccionado] = useState(proveedores[0])
+  const [proveedores, setProveedores] = useState([])
+  const [seleccionado, setSeleccionado] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  const [showModal, setShowModal] = useState(false)
+
+  const fetchProveedores = async () => {
+    setLoading(true)
+    setError('')
+    try {
+      const res = await fetch('http://localhost:4000/api/suppliers', {
+        credentials: 'include',
+      })
+      const data = await res.json()
+      const lista = Array.isArray(data) ? data : []
+      setProveedores(lista)
+      if (lista.length > 0) setSeleccionado(lista[0])
+    } catch (err) {
+      setError('No se pudieron cargar los proveedores')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => { fetchProveedores() }, [])
 
   const filtrados = proveedores.filter(
     (p) =>
-      p.nombre.toLowerCase().includes(search.toLowerCase()) ||
-      p.email.toLowerCase().includes(search.toLowerCase())
+      (p.name || '').toLowerCase().includes(search.toLowerCase()) ||
+      (p.email || '').toLowerCase().includes(search.toLowerCase())
   )
 
   return (
@@ -139,25 +175,21 @@ function Proveedores() {
         <Navbar />
         <div className="content">
 
-          {/* Header */}
           <div className="page-header">
             <h1 className="page-title">Proveedores</h1>
-            <button className="btn-add">+ Añadir Proveedor</button>
+            <button className="btn-add" onClick={() => setShowModal(true)}>+ Añadir Proveedor</button>
           </div>
 
-          {/* Tarjetas de estadísticas */}
           <div className="stats-grid">
             <div className="stat-card">
               <span className="stat-icon">👥</span>
-              <div className="stat-number">5</div>
+              <div className="stat-number">{proveedores.length}</div>
               <div className="stat-label">Proveedores Activos</div>
-              <div className="stat-sub">Proveedores este mes</div>
             </div>
             <div className="stat-card">
               <span className="stat-icon">📦</span>
               <div className="stat-number">2</div>
               <div className="stat-label">Pedidos Pendientes</div>
-              <div className="stat-sub">Estado: permita, vista</div>
             </div>
             <div className="stat-card">
               <span className="stat-icon">💲</span>
@@ -172,167 +204,110 @@ function Proveedores() {
             </div>
           </div>
 
-          {/* Contenido principal */}
-          <div className="main-grid">
+          {loading && <p className="loading-msg">Cargando proveedores...</p>}
+          {error && <p className="error-msg">{error}</p>}
 
-            {/* Tabla de proveedores */}
-            <div className="tabla-card">
-              <h2 className="section-title">Proveedores</h2>
-              <div className="search-box">
-                <span>🔍</span>
-                <input
-                  type="text"
-                  placeholder="Buscar proveedor..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                />
-              </div>
-              <table className="proveedores-table">
-                <thead>
-                  <tr>
-                    <th>PROVEEDOR</th>
-                    <th>EMPRESAS</th>
-                    <th>TELÉFONO</th>
-                    <th>ESTADO</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filtrados.map((p) => (
-                    <tr
-                      key={p.id}
-                      onClick={() => setSeleccionado(p)}
-                      className={seleccionado.id === p.id ? 'row-selected' : ''}
-                    >
-                      <td>
-                        <div className="proveedor-info">
-                          <div className="avatar">{p.avatar}</div>
-                          <div>
-                            <div className="proveedor-nombre">{p.nombre}</div>
-                            <div className="proveedor-email">{p.email}</div>
-                          </div>
-                        </div>
-                      </td>
-                      <td>{p.empresa}</td>
-                      <td>{p.telefono}</td>
-                      <td>
-                        <span className={`badge ${estadoClass[p.estado]}`}>
-                          • {p.estado}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            {/* Panel de detalle */}
-            <div className="detalle-col">
-
-              {/* Info del proveedor */}
-              <div className="detalle-card">
-                <div className="detalle-header">
-                  <div className="avatar avatar-lg">{seleccionado.avatar}</div>
-                  <div>
-                    <div className="detalle-nombre">{seleccionado.nombre}</div>
-                    <div className="detalle-contacto">{seleccionado.contacto}</div>
-                    <div className="detalle-email">{seleccionado.email}</div>
-                    <span className={`badge ${estadoClass[seleccionado.estado]}`}>
-                      • {seleccionado.estado}
-                    </span>
-                  </div>
+          {!loading && !error && (
+            <div className="main-grid">
+              <div className="tabla-card">
+                <h2 className="section-title">Proveedores</h2>
+                <div className="search-box">
+                  <span>🔍</span>
+                  <input
+                    type="text"
+                    placeholder="Buscar proveedor..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                  />
                 </div>
-                <div className="detalle-datos">
-                  <div>📞 {seleccionado.telefono}</div>
-                  <div>✉️ {seleccionado.direccion}</div>
-                  <div>📍 {seleccionado.ciudad}</div>
-                </div>
-
-                {/* Productos suministrados */}
-                <div className="productos-section">
-                  <h3>Productos Suministrados</h3>
-                  <div className="productos-grid">
-                    {seleccionado.productos.map((prod, i) => (
-                      <div key={i} className="producto-card">
-                        <div className="producto-img">👕</div>
-                        <div className="producto-nombre">{prod.nombre}</div>
-                        <div className="producto-precio">{prod.precio} — {prod.stock}</div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* Pedidos */}
-              <div className="detalle-card">
-                <h3 className="section-title">Pedidos</h3>
-                <table className="pedidos-table">
+                <table className="proveedores-table">
                   <thead>
                     <tr>
-                      <th>PEDIDO</th>
-                      <th>FECHA</th>
+                      <th>PROVEEDOR</th>
+                      <th>EMPRESAS</th>
+                      <th>TELÉFONO</th>
                       <th>ESTADO</th>
-                      <th>CANTIDAD</th>
-                      <th>TOTAL</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {seleccionado.pedidos.map((ped, i) => (
-                      <tr key={i}>
-                        <td className="pedido-id">{ped.id}</td>
-                        <td>{ped.fecha}</td>
+                    {filtrados.map((p) => (
+                      <tr
+                        key={p._id}
+                        onClick={() => setSeleccionado(p)}
+                        className={seleccionado?._id === p._id ? 'row-selected' : ''}
+                      >
                         <td>
-                          <span className={`badge-pedido ${pedidoClass[ped.estado]}`}>
-                            {ped.estado}
+                          <div className="proveedor-info">
+                            <div className="avatar">{(p.name || 'P')[0]}</div>
+                            <div>
+                              <div className="proveedor-nombre">{p.name}</div>
+                              <div className="proveedor-email">{p.email}</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td>{p.company}</td>
+                        <td>{p.phone}</td>
+                        <td>
+                          <span className={`badge ${estadoClass[p.status] || 'badge-pendiente'}`}>
+                            • {p.status}
                           </span>
                         </td>
-                        <td>{ped.cantidad}</td>
-                        <td className="pedido-total">{ped.total}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
 
-              {/* Evaluación */}
-              <div className="detalle-card">
-                <div className="eval-header">
-                  <h3>Evaluación del Proveedor</h3>
-                  <span className={`badge ${estadoClass[seleccionado.estado]}`}>
-                    • {seleccionado.estado}
-                  </span>
-                </div>
-                <div className="eval-body">
-                  <div className="eval-row">
-                    <span>📦 Almacenía</span>
+              {seleccionado && (
+                <div className="detalle-col">
+                  <div className="detalle-card">
+                    <div className="detalle-header">
+                      <div className="avatar avatar-lg">{(seleccionado.name || 'P')[0]}</div>
+                      <div>
+                        <div className="detalle-nombre">{seleccionado.name}</div>
+                        <div className="detalle-email">{seleccionado.email}</div>
+                        <span className={`badge ${estadoClass[seleccionado.status] || 'badge-pendiente'}`}>
+                          • {seleccionado.status}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="detalle-datos">
+                      <div>📞 {seleccionado.phone}</div>
+                      <div>🏢 {seleccionado.company}</div>
+                      <div>📍 {seleccionado.address}</div>
+                    </div>
                   </div>
-                  <div className="eval-stars">
-                    {'★★★★★'.split('').map((s, i) => (
-                      <span key={i} className="star filled">{s}</span>
-                    ))}
-                    <span className="eval-pct">{seleccionado.evaluacion.porcentaje}%</span>
-                  </div>
-                  <div className="eval-bar">
-                    <div
-                      className="eval-fill"
-                      style={{ width: `${seleccionado.evaluacion.porcentaje}%` }}
-                    ></div>
-                  </div>
-                  <div className="eval-info">
-                    <span>Entrega promedio</span>
-                    <span>{seleccionado.evaluacion.entrega}</span>
-                  </div>
-                  <div className="eval-tags">
-                    {seleccionado.evaluacion.categorias.map((cat, i) => (
-                      <span key={i} className="eval-tag">{cat}</span>
-                    ))}
-                  </div>
-                </div>
-              </div>
 
+                  <div className="detalle-card">
+                    <div className="eval-header">
+                      <h3>Evaluación del Proveedor</h3>
+                      <span className={`badge ${estadoClass[seleccionado.status] || 'badge-pendiente'}`}>
+                        • {seleccionado.status}
+                      </span>
+                    </div>
+                    <div className="eval-stars">
+                      {'★★★★★'.split('').map((s, i) => (
+                        <span key={i} className="star filled">{s}</span>
+                      ))}
+                      <span className="eval-pct">{seleccionado.rating || 90}%</span>
+                    </div>
+                    <div className="eval-bar">
+                      <div className="eval-fill" style={{ width: `${seleccionado.rating || 90}%` }}></div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
-          </div>
+          )}
         </div>
       </div>
+
+      {showModal && (
+        <ModalAgregar
+          onClose={() => setShowModal(false)}
+          onGuardado={fetchProveedores}
+        />
+      )}
     </div>
   )
 }

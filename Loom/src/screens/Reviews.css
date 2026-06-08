@@ -138,3 +138,26 @@
   background-color: #fee2e2;
   color: #dc2626;
 }
+
+.loading-msg {
+  text-align: center;
+  color: #64748b;
+  padding: 24px;
+  font-size: 0.9rem;
+}
+
+.error-msg {
+  text-align: center;
+  color: #dc2626;
+  background-color: #fee2e2;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 0.88rem;
+}
+
+.empty-msg {
+  text-align: center;
+  color: #94a3b8;
+  padding: 24px;
+  font-size: 0.9rem;
+}

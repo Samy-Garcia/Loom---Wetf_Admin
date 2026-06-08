@@ -1,8 +1,10 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import Login from './screens/Login'
+import Register from './screens/Register'
+import Analisis from './screens/Analisis'
 import Reviews from './screens/Reviews'
 import Proveedores from './screens/Proveedores'
 import Ofertas from './screens/Ofertas'
-import Analisis from './screens/Analisis'
 import Productos from './screens/Productos'
 import Inventario from './screens/Inventario'
 
@@ -10,7 +12,9 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Navigate to="/analisis" />} />
+        <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/analisis" element={<Analisis />} />
         <Route path="/reviews" element={<Reviews />} />
         <Route path="/proveedores" element={<Proveedores />} />

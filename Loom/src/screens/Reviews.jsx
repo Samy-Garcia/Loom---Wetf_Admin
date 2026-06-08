@@ -1,61 +1,13 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Sidebar from '../components/Sidebar'
 import Navbar from '../components/Navbar'
 import './Reviews.css'
-
-const reviewsGenerales = [
-  {
-    id: 1,
-    ranking: 5,
-    titulo: 'Excelente servicio',
-    experiencia: 'Muy satisfecho con la compra',
-    tipo: 'Positiva',
-    detalles: 'El producto llegó en perfecto estado y la atención...',
-  },
-  {
-    id: 2,
-    ranking: 4,
-    titulo: 'Buena calidad',
-    experiencia: 'Recomendado',
-    tipo: 'Positiva',
-    detalles: 'Los productos son de buena calidad, aunque el e...',
-  },
-  {
-    id: 3,
-    ranking: 3,
-    titulo: 'Entrega tardía',
-    experiencia: 'Tardó más de lo esperado',
-    tipo: 'Negativa',
-    detalles: 'La entrega se retrasó varios días sin aviso previo...',
-  },
-]
-
-const reviewsProductos = [
-  {
-    id: 1,
-    ranking: 5,
-    titulo: 'Tela excelente',
-    experiencia: 'Muy buena calidad',
-    tipo: 'Positiva',
-    detalles: 'La tela es suave y duradera, totalmente recomendada...',
-  },
-  {
-    id: 2,
-    ranking: 2,
-    titulo: 'Color diferente',
-    experiencia: 'No era lo que esperaba',
-    tipo: 'Negativa',
-    detalles: 'El color del producto no coincidía con las fotos...',
-  },
-]
 
 function StarRating({ count }) {
   return (
     <div className="stars">
       {[1, 2, 3, 4, 5].map((star) => (
-        <span key={star} className={star <= count ? 'star filled' : 'star'}>
-          ★
-        </span>
+        <span key={star} className={star <= count ? 'star filled' : 'star'}>★</span>
       ))}
       <span className="ranking-num">{count}/5</span>
     </div>
@@ -65,13 +17,33 @@ function StarRating({ count }) {
 function Reviews() {
   const [activeTab, setActiveTab] = useState('generales')
   const [search, setSearch] = useState('')
+  const [reviews, setReviews] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
 
-  const data = activeTab === 'generales' ? reviewsGenerales : reviewsProductos
+  useEffect(() => {
+    const fetchReviews = async () => {
+      setLoading(true)
+      setError('')
+      try {
+        const res = await fetch('http://localhost:4000/api/generalReviews', {
+          credentials: 'include',
+        })
+        const data = await res.json()
+        setReviews(Array.isArray(data) ? data : [])
+      } catch (err) {
+        setError('No se pudieron cargar las reviews')
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchReviews()
+  }, [])
 
-  const filtered = data.filter(
+  const filtered = reviews.filter(
     (r) =>
-      r.titulo.toLowerCase().includes(search.toLowerCase()) ||
-      r.experiencia.toLowerCase().includes(search.toLowerCase())
+      (r.title || r.titulo || '').toLowerCase().includes(search.toLowerCase()) ||
+      (r.experience || r.experiencia || '').toLowerCase().includes(search.toLowerCase())
   )
 
   return (
@@ -83,7 +55,6 @@ function Reviews() {
           <h1 className="page-title">Reviews</h1>
 
           <div className="reviews-card">
-            {/* Tabs */}
             <div className="tabs">
               <button
                 className={activeTab === 'generales' ? 'tab active' : 'tab'}
@@ -99,48 +70,53 @@ function Reviews() {
               </button>
             </div>
 
-            {/* Buscador */}
             <div className="search-box">
               <span className="search-icon">🔍</span>
               <input
                 type="text"
-                placeholder={
-                  activeTab === 'generales'
-                    ? 'Buscar review general...'
-                    : 'Buscar review de producto...'
-                }
+                placeholder={activeTab === 'generales' ? 'Buscar review general...' : 'Buscar review de producto...'}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
             </div>
 
-            {/* Tabla */}
-            <table className="reviews-table">
-              <thead>
-                <tr>
-                  <th>RANKING</th>
-                  <th>TÍTULO</th>
-                  <th>EXPERIENCIA</th>
-                  <th>TIPO</th>
-                  <th>DETALLES</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map((review) => (
-                  <tr key={review.id}>
-                    <td><StarRating count={review.ranking} /></td>
-                    <td className="titulo">{review.titulo}</td>
-                    <td>{review.experiencia}</td>
-                    <td>
-                      <span className={`badge ${review.tipo.toLowerCase()}`}>
-                        {review.tipo}
-                      </span>
-                    </td>
-                    <td className="detalles">{review.detalles}</td>
+            {loading && <p className="loading-msg">Cargando reviews...</p>}
+            {error && <p className="error-msg">{error}</p>}
+
+            {!loading && !error && (
+              <table className="reviews-table">
+                <thead>
+                  <tr>
+                    <th>RANKING</th>
+                    <th>TÍTULO</th>
+                    <th>EXPERIENCIA</th>
+                    <th>TIPO</th>
+                    <th>DETALLES</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {filtered.length === 0 ? (
+                    <tr>
+                      <td colSpan="5" className="empty-msg">No hay reviews disponibles</td>
+                    </tr>
+                  ) : (
+                    filtered.map((review, i) => (
+                      <tr key={review._id || i}>
+                        <td><StarRating count={review.ranking || review.rating || 0} /></td>
+                        <td className="titulo">{review.title || review.titulo}</td>
+                        <td>{review.experience || review.experiencia}</td>
+                        <td>
+                          <span className={`badge ${(review.type || review.tipo || '').toLowerCase() === 'positiva' ? 'positiva' : 'negativa'}`}>
+                            {review.type || review.tipo}
+                          </span>
+                        </td>
+                        <td>{review.details || review.detalles}</td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            )}
           </div>
         </div>
       </div>
