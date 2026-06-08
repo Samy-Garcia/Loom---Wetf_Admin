@@ -5,8 +5,6 @@ function Navbar() {
     <header className="navbar">
       <div className="navbar-right">
         <div className="navbar-bell">
-          🔔
-          <span className="bell-dot"></span>
         </div>
         <div className="navbar-user">
           <div className="user-avatar">F</div>

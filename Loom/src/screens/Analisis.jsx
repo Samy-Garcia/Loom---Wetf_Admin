@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Sidebar from '../components/Sidebar'
 import Navbar from '../components/Navbar'
 import {
@@ -7,44 +7,91 @@ import {
 } from 'recharts'
 import './Analisis.css'
 
-const ventasData = [
-  { fecha: 'Apr 6', valor: 1900 },
-  { fecha: 'Apr 8', valor: 1800 },
-  { fecha: 'Apr 10', valor: 2100 },
-  { fecha: 'Apr 11', valor: 2650 },
-  { fecha: 'Apr 12', valor: 2700 },
-  { fecha: 'Apr 13', valor: 2400 },
-  { fecha: 'Apr 15', valor: 3100 },
-  { fecha: 'Apr 16', valor: 2900 },
-  { fecha: 'Apr 17', valor: 3600 },
-]
+const API = 'http://localhost:4000/api'
 
-const ingresosData = [
-  { fecha: 'Apr 6', ingresos: 5000 },
-  { fecha: 'Apr 8', ingresos: 12000 },
-  { fecha: 'Apr 10', ingresos: 18000 },
-  { fecha: 'Apr 11', ingresos: 14000 },
-  { fecha: 'Apr 12', ingresos: 16000 },
-  { fecha: 'Apr 14', ingresos: 35000 },
-  { fecha: 'Apr 15', ingresos: 42000 },
-]
-
-const productosMasVendidos = [
-  { nombre: 'Spider Black Leather Jacket', precio: '$169.00', vendidos: 34, icon: '🧥' },
-  { nombre: 'Rhinestones Tracksuit Pants', precio: '$157.00', vendidos: 29, icon: '👖' },
-  { nombre: 'Rhinestones Tracksuit Hoodie', precio: '$157.00', vendidos: 29, icon: '👕' },
-]
-
-const ultimosPedidos = [
-  { id: '#00238', fecha: '10 Abr 2024', total: '$450.00', avatar: '👨' },
-  { id: '#00239', fecha: '10 Abr 2024', total: '$325.00', avatar: '👩' },
-  { id: '#00240', fecha: '11 Abr 2024', total: '$590.00', avatar: '👩' },
-  { id: '#00241', fecha: '11 Abr 2024', total: '$420.00', avatar: '👨' },
-]
+const periodMap = {
+  'Día': 'day',
+  'Semana': 'week',
+  'Mes': 'month',
+  'Max': 'month',
+  'Dia': 'day',
+}
 
 function Analisis() {
   const [tabVentas, setTabVentas] = useState('Mes')
   const [tabIngresos, setTabIngresos] = useState('Dia')
+
+  const [stats, setStats] = useState(null)
+  const [ventasData, setVentasData] = useState([])
+  const [ingresosData, setIngresosData] = useState([])
+  const [productosMasVendidos, setProductosMasVendidos] = useState([])
+  const [sinStock, setSinStock] = useState([])
+  const [ultimosPedidos, setUltimosPedidos] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  // Stats generales
+  useEffect(() => {
+    fetch(`${API}/orders/stats`)
+      .then(r => r.json())
+      .then(setStats)
+      .catch(console.error)
+  }, [])
+
+  // Gráfica de ventas — se recarga al cambiar tab
+  useEffect(() => {
+    const period = periodMap[tabVentas] || 'month'
+    fetch(`${API}/orders/sales?period=${period}`)
+      .then(r => r.json())
+      .then(setVentasData)
+      .catch(console.error)
+  }, [tabVentas])
+
+  // Gráfica de ingresos — se recarga al cambiar tab
+  useEffect(() => {
+    const period = periodMap[tabIngresos] || 'day'
+    fetch(`${API}/orders/revenue?period=${period}`)
+      .then(r => r.json())
+      .then(setIngresosData)
+      .catch(console.error)
+  }, [tabIngresos])
+
+  // Productos + sin stock
+  useEffect(() => {
+    fetch(`${API}/products`)
+      .then(r => r.json())
+      .then(products => {
+        // Sin stock
+        setSinStock(products.filter(p => p.stock === 0))
+        // Más vendidos: ordenar por campo sold si existe, si no mostrar los primeros
+        const sorted = [...products]
+          .sort((a, b) => (b.sold || 0) - (a.sold || 0))
+          .slice(0, 3)
+        setProductosMasVendidos(sorted)
+      })
+      .catch(console.error)
+  }, [])
+
+  // Últimos pedidos
+  useEffect(() => {
+    fetch(`${API}/orders?limit=4`)
+      .then(r => r.json())
+      .then(orders => {
+        setUltimosPedidos(orders)
+        setLoading(false)
+      })
+      .catch(() => setLoading(false))
+  }, [])
+
+  const fmt = (n) =>
+    n !== undefined && n !== null
+      ? `$${Number(n).toLocaleString('en-US', { minimumFractionDigits: 0 })}`
+      : '$0'
+
+  const fmtDate = (iso) => {
+    if (!iso) return ''
+    const d = new Date(iso)
+    return d.toLocaleDateString('es-MX', { day: '2-digit', month: 'short', year: 'numeric' })
+  }
 
   return (
     <div className="layout">
@@ -70,26 +117,36 @@ function Analisis() {
                 <span className="stat-dots">⋯</span>
               </div>
               <div className="stat-card-label">Ventas del día</div>
-              <div className="stat-card-number">$1,487</div>
-              <div className="stat-card-sub">Usada para estadísticas anteriores</div>
+              <div className="stat-card-number">
+                {stats ? fmt(stats.ventasHoy) : '—'}
+              </div>
+              <div className="stat-card-sub">Ventas de hoy</div>
             </div>
+
             <div className="stat-card">
               <div className="stat-card-top">
                 <div className="stat-icon-box green">💲</div>
                 <span className="stat-dots">⋯</span>
               </div>
               <div className="stat-card-label">Ventas del mes</div>
-              <div className="stat-card-number">$28,756</div>
-              <div className="stat-card-sub green-text">+ 48%</div>
+              <div className="stat-card-number">
+                {stats ? fmt(stats.ventasMes) : '—'}
+              </div>
+              <div className="stat-card-sub green-text">
+                {stats ? `+ ${stats.crecimientoMes}%` : '—'}
+              </div>
             </div>
+
             <div className="stat-card">
               <div className="stat-card-top">
                 <div className="stat-icon-box orange">🛒</div>
                 <span className="stat-dots">⋯</span>
               </div>
               <div className="stat-card-label">Pedidos en ruta</div>
-              <div className="stat-card-number">8</div>
-              <div className="stat-card-sub green-text">+ 1 ↑</div>
+              <div className="stat-card-number">
+                {stats ? stats.pedidosEnRuta : '—'}
+              </div>
+              <div className="stat-card-sub green-text">en ruta ahora</div>
             </div>
           </div>
 
@@ -121,18 +178,30 @@ function Analisis() {
 
             <div className="sin-stock-card">
               <h2 className="section-title">Productos sin stock</h2>
-              <div className="sin-stock-item">
-                <div className="sin-stock-img">👖</div>
-                <div>
-                  <div className="sin-stock-nombre">Internos Tracksuit Pants</div>
-                  <div className="sin-stock-code">Set56809</div>
-                  <a href="#" className="sin-stock-link">Reabastecer →</a>
+              {sinStock.length === 0 ? (
+                <p style={{ color: '#94a3b8', fontSize: 13 }}>No hay productos sin stock</p>
+              ) : (
+                sinStock.slice(0, 3).map((p, i) => (
+                  <div key={i} className="sin-stock-item">
+                    <div className="sin-stock-img">
+                      {p.images?.[0]?.image
+                        ? <img src={p.images[0].image} alt={p.name} style={{ width: 36, height: 36, objectFit: 'cover', borderRadius: 6 }} />
+                        : '📦'}
+                    </div>
+                    <div>
+                      <div className="sin-stock-nombre">{p.name}</div>
+                      <div className="sin-stock-code">{p.sub_type || p.product_type || ''}</div>
+                      <a href="#" className="sin-stock-link">Reabastecer →</a>
+                    </div>
+                  </div>
+                ))
+              )}
+              {productosMasVendidos[0] && (
+                <div className="ultimos-exitos">
+                  <div className="exitos-title">Últimos éxitos</div>
+                  <div className="exitos-sub">#1 {productosMasVendidos[0].name}</div>
                 </div>
-              </div>
-              <div className="ultimos-exitos">
-                <div className="exitos-title">Últimos éxitos</div>
-                <div className="exitos-sub">#1 Edur Rhinestones - 182lbsc</div>
-              </div>
+              )}
             </div>
           </div>
 
@@ -143,19 +212,27 @@ function Analisis() {
                 <h2 className="section-title">Productos más vendidos</h2>
                 <a href="#" className="ver-mas">Ver todo →</a>
               </div>
-              {productosMasVendidos.map((prod, i) => (
-                <div key={i} className="prod-vendido-row">
-                  <div className="prod-vendido-img">{prod.icon}</div>
-                  <div className="prod-vendido-info">
-                    <div className="prod-vendido-nombre">{prod.nombre}</div>
-                    <div className="prod-vendido-precio">{prod.precio}</div>
+              {productosMasVendidos.length === 0 ? (
+                <p style={{ color: '#94a3b8', fontSize: 13 }}>Cargando productos...</p>
+              ) : (
+                productosMasVendidos.map((prod, i) => (
+                  <div key={i} className="prod-vendido-row">
+                    <div className="prod-vendido-img">
+                      {prod.images?.[0]?.image
+                        ? <img src={prod.images[0].image} alt={prod.name} style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 8 }} />
+                        : '🛍️'}
+                    </div>
+                    <div className="prod-vendido-info">
+                      <div className="prod-vendido-nombre">{prod.name}</div>
+                      <div className="prod-vendido-precio">${prod.price?.toFixed(2)}</div>
+                    </div>
+                    <div className="prod-vendido-cant">
+                      <div className="prod-vendido-num">{prod.sold ?? '—'}</div>
+                      <div className="prod-vendido-sold">sold</div>
+                    </div>
                   </div>
-                  <div className="prod-vendido-cant">
-                    <div className="prod-vendido-num">{prod.vendidos}</div>
-                    <div className="prod-vendido-sold">sold</div>
-                  </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
 
             <div className="chart-card">
@@ -163,19 +240,27 @@ function Analisis() {
                 <h2 className="section-title">Últimos Pedidos</h2>
                 <a href="#" className="ver-mas">VER TODOS →</a>
               </div>
-              {ultimosPedidos.map((ped, i) => (
-                <div key={i} className="pedido-row">
-                  <div className="pedido-avatar">{ped.avatar}</div>
-                  <div className="pedido-info">
-                    <div className="pedido-id">{ped.id}</div>
-                    <div className="pedido-fecha">{ped.fecha}</div>
+              {loading ? (
+                <p style={{ color: '#94a3b8', fontSize: 13 }}>Cargando pedidos...</p>
+              ) : ultimosPedidos.length === 0 ? (
+                <p style={{ color: '#94a3b8', fontSize: 13 }}>No hay pedidos aún</p>
+              ) : (
+                ultimosPedidos.map((ped, i) => (
+                  <div key={i} className="pedido-row">
+                    <div className="pedido-avatar">
+                      {ped.client?.name?.[0]?.toUpperCase() || '👤'}
+                    </div>
+                    <div className="pedido-info">
+                      <div className="pedido-id">#{ped._id?.slice(-5).toUpperCase()}</div>
+                      <div className="pedido-fecha">{fmtDate(ped.createdAt)}</div>
+                    </div>
+                    <div className="pedido-right">
+                      <div className="pedido-total">{fmt(ped.total)}</div>
+                      <button className="btn-editar-sm">Editar</button>
+                    </div>
                   </div>
-                  <div className="pedido-right">
-                    <div className="pedido-total">{ped.total}</div>
-                    <button className="btn-editar-sm">Editar</button>
-                  </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           </div>
 
@@ -184,8 +269,10 @@ function Analisis() {
             <div className="chart-header">
               <div>
                 <h2 className="section-title">Ingresos Mensuales</h2>
-                <div className="ingresos-total">$88,920</div>
-                <div className="ingresos-sub">Total en 2024</div>
+                <div className="ingresos-total">
+                  {stats ? fmt(stats.ventasMes) : '—'}
+                </div>
+                <div className="ingresos-sub">Total del mes actual</div>
               </div>
               <div className="tab-group">
                 {['Dia', 'Semana', 'Mes'].map(t => (

@@ -15,7 +15,7 @@ supplierController.getAll = async (req, res) => {
 
 supplierController.create = async (req, res) => {
     try {
-        const { name, email, phone, address } = req.body;
+        const { name, email, phone, address, company } = req.body;
 
         let imgPath = null;
         let publicId = null;
@@ -31,6 +31,7 @@ supplierController.create = async (req, res) => {
             phone,
             image: imgPath,
             address,
+            company,
             isVerified: true,
             public_id: publicId,
         });
@@ -65,14 +66,14 @@ supplierController.delete = async (req, res) => {
 supplierController.update = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, email, phone, address } = req.body;
+        const { name, email, phone, address, company } = req.body;
         const suppliersToUpdate = await plantsModel.findById(id);
 
         if (!suppliersToUpdate) {
             return res.status(404).json({ message: 'Supplier not found' });
         }
 
-        let updatedData = { name, email, phone, address };
+        let updatedData = { name, email, phone, address, company };
 
         if (req.file) {
             if (suppliersToUpdate.public_id) {

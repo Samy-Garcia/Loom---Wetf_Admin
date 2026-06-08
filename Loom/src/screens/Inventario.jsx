@@ -1,35 +1,9 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Sidebar from '../components/Sidebar'
 import Navbar from '../components/Navbar'
 import './Inventario.css'
 
-const productos = [
-  {
-    id: 1, nombre: 'Spider Black Leather Jacket', icon: '🧥',
-    stock: 15, maxStock: 20, estado: 'Stock bajo',
-    comentarios: '$197 cot', categoria: 'Hombre'
-  },
-  {
-    id: 2, nombre: 'Rhinestones Tracksuit Hoodie', icon: '👕',
-    stock: 5, maxStock: 20, estado: 'Agotado',
-    comentarios: '1 May 2024\nHasta el 1 May 2024', categoria: 'Mujer'
-  },
-  {
-    id: 3, nombre: 'Rhinestones Tracksuit Pants', icon: '👖',
-    stock: 0, maxStock: 20, estado: 'Agotado',
-    comentarios: '1 May 2024\n$59.00\nHasta el 1 May 2024', categoria: 'Hombre'
-  },
-  {
-    id: 4, nombre: 'Detachable Fur Gray Zip-Up', icon: '🧥',
-    stock: 7, maxStock: 20, estado: 'Stock bajo',
-    comentarios: '7 May 2024\n$169.00', categoria: 'Accesorios'
-  },
-  {
-    id: 5, nombre: 'Fur Zip-Up Spider', icon: '🧥',
-    stock: 12, maxStock: 20, estado: 'Disponible',
-    comentarios: '$135.00', categoria: 'Mujer'
-  },
-]
+const API = 'http://localhost:4000/api'
 
 const estadoClass = {
   'Stock bajo': 'badge-stockbajo',
@@ -37,15 +11,45 @@ const estadoClass = {
   'Disponible': 'badge-disponible',
 }
 
-const categorias = ['Hombre', 'Mujer', 'Accesorios']
+function getEstado(stock) {
+  if (stock === 0) return 'Agotado'
+  if (stock <= 7) return 'Stock bajo'
+  return 'Disponible'
+}
 
 function Inventario() {
   const [search, setSearch] = useState('')
   const [categoriaActiva, setCategoriaActiva] = useState(null)
+  const [productos, setProductos] = useState([])
+  const [suppliers, setSuppliers] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    Promise.all([
+      fetch(`${API}/products`).then(r => r.json()),
+      fetch(`${API}/suppliers`).then(r => r.json()),
+    ])
+      .then(([prods, sups]) => {
+        setProductos(prods)
+        setSuppliers(sups)
+        setLoading(false)
+      })
+      .catch(() => setLoading(false))
+  }, [])
+
+  // Stats calculadas desde los datos reales
+  const totalStock = productos.reduce((acc, p) => acc + (p.stock || 0), 0)
+  const agotados = productos.filter(p => p.stock === 0).length
+  const bajoInventario = productos.filter(p => p.stock > 0 && p.stock <= 7).length
+
+  // Categorías únicas desde los productos
+  const categorias = [...new Set(productos.map(p => p.product_type).filter(Boolean))]
+
+  const maxStock = productos.length > 0 ? Math.max(...productos.map(p => p.stock || 0), 1) : 20
 
   const filtrados = productos.filter(p => {
-    const matchSearch = p.nombre.toLowerCase().includes(search.toLowerCase())
-    const matchCat = categoriaActiva ? p.categoria === categoriaActiva : true
+    const matchSearch = p.name?.toLowerCase().includes(search.toLowerCase())
+    const matchCat = categoriaActiva ? p.product_type === categoriaActiva : true
     return matchSearch && matchCat
   })
 
@@ -69,39 +73,36 @@ function Inventario() {
                 <div className="stat-icon-box blue">👥</div>
                 <span className="stat-dots">⋯</span>
               </div>
-              <div className="stat-number-p">320</div>
+              <div className="stat-number-p">{loading ? '—' : totalStock}</div>
               <div className="stat-label-p">Productos en Stock</div>
-              <div className="stat-sub-p">Tienda del día alertas</div>
+              <div className="stat-sub-p">Unidades totales disponibles</div>
             </div>
             <div className="stat-card-p">
               <div className="stat-card-top">
                 <div className="stat-icon-box orange">📦</div>
                 <span className="stat-dots">⋯</span>
               </div>
-              <div className="stat-number-p">15</div>
+              <div className="stat-number-p">{loading ? '—' : agotados}</div>
               <div className="stat-label-p">Agotados</div>
-              <div className="stat-sub-p">Bajo cantidad</div>
-              <div className="stat-trend green">+ 33%</div>
+              <div className="stat-sub-p">Sin unidades disponibles</div>
             </div>
             <div className="stat-card-p">
               <div className="stat-card-top">
                 <div className="stat-icon-box orange">⚠️</div>
                 <span className="stat-dots">⋯</span>
               </div>
-              <div className="stat-number-p">7</div>
+              <div className="stat-number-p">{loading ? '—' : bajoInventario}</div>
               <div className="stat-label-p">Bajo Inventario</div>
-              <div className="stat-sub-p">Bajo cantidad</div>
-              <div className="stat-trend green">+ 25%</div>
+              <div className="stat-sub-p">7 unidades o menos</div>
             </div>
             <div className="stat-card-p">
               <div className="stat-card-top">
                 <div className="stat-icon-box blue">🏢</div>
                 <span className="stat-dots">⋯</span>
               </div>
-              <div className="stat-number-p">5</div>
-              <div className="stat-label-p">5 Proveedores</div>
-              <div className="stat-sub-p">Negocios proveedor Proporcionistas</div>
-              <div className="stat-trend red">+ 1 ↑</div>
+              <div className="stat-number-p">{loading ? '—' : suppliers.length}</div>
+              <div className="stat-label-p">Proveedores</div>
+              <div className="stat-sub-p">Proveedores registrados</div>
             </div>
           </div>
 
@@ -130,59 +131,75 @@ function Inventario() {
                     {cat}
                   </button>
                 ))}
-                <button className="cat-btn">por (Baida Gis</button>
                 <button className="cat-btn-icon">☰</button>
               </div>
             </div>
 
             {/* Tabla */}
-            <table className="inventario-table">
-              <thead>
-                <tr>
-                  <th>PRODUCTO</th>
-                  <th>STOCK</th>
-                  <th>COMENTARIOS</th>
-                  <th>ACCIONES ▼</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtrados.map(p => (
-                  <tr key={p.id}>
-                    <td>
-                      <div className="producto-info">
-                        <div className="producto-img-box">{p.icon}</div>
-                        <span className="producto-nombre">{p.nombre}</span>
-                      </div>
-                    </td>
-                    <td>
-                      <div className="stock-cell">
-                        <span className="stock-num">{p.stock}</span>
-                        <div className="stock-bar-wrap">
-                          <div
-                            className="stock-bar-fill"
-                            style={{
-                              width: `${(p.stock / p.maxStock) * 100}%`,
-                              backgroundColor: p.stock === 0 ? '#e2e8f0' : p.stock <= 5 ? '#f59e0b' : '#3b82f6'
-                            }}
-                          ></div>
-                        </div>
-                        <span className={`badge-estado ${estadoClass[p.estado]}`}>
-                          {p.estado}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="comentarios-cell">
-                      {p.comentarios.split('\n').map((line, i) => (
-                        <div key={i}>{line}</div>
-                      ))}
-                    </td>
-                    <td>
-                      <button className="btn-editar">Editar</button>
-                    </td>
+            {loading ? (
+              <p style={{ color: '#94a3b8', padding: '20px 0' }}>Cargando inventario...</p>
+            ) : (
+              <table className="inventario-table">
+                <thead>
+                  <tr>
+                    <th>PRODUCTO</th>
+                    <th>STOCK</th>
+                    <th>CATEGORÍA</th>
+                    <th>ACCIONES ▼</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {filtrados.map(p => {
+                    const estado = getEstado(p.stock || 0)
+                    const barWidth = Math.min((p.stock / maxStock) * 100, 100)
+                    const barColor = p.stock === 0 ? '#e2e8f0' : p.stock <= 7 ? '#f59e0b' : '#3b82f6'
+                    return (
+                      <tr key={p._id}>
+                        <td>
+                          <div className="producto-info">
+                            <div className="producto-img-box">
+                              {p.images?.[0]?.image
+                                ? <img src={p.images[0].image} alt={p.name} style={{ width: 36, height: 36, objectFit: 'cover', borderRadius: 6 }} />
+                                : '📦'}
+                            </div>
+                            <span className="producto-nombre">{p.name}</span>
+                          </div>
+                        </td>
+                        <td>
+                          <div className="stock-cell">
+                            <span className="stock-num">{p.stock ?? 0}</span>
+                            <div className="stock-bar-wrap">
+                              <div
+                                className="stock-bar-fill"
+                                style={{ width: `${barWidth}%`, backgroundColor: barColor }}
+                              />
+                            </div>
+                            <span className={`badge-estado ${estadoClass[estado]}`}>
+                              {estado}
+                            </span>
+                          </div>
+                        </td>
+                        <td className="comentarios-cell">
+                          <div>{p.product_type || '—'}</div>
+                          {p.sub_type && <div style={{ color: '#94a3b8', fontSize: 12 }}>{p.sub_type}</div>}
+                          <div style={{ fontWeight: 500 }}>${p.price?.toFixed(2)}</div>
+                        </td>
+                        <td>
+                          <button className="btn-editar">Editar</button>
+                        </td>
+                      </tr>
+                    )
+                  })}
+                  {filtrados.length === 0 && (
+                    <tr>
+                      <td colSpan={4} style={{ color: '#94a3b8', textAlign: 'center', padding: 20 }}>
+                        No se encontraron productos
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            )}
           </div>
 
         </div>

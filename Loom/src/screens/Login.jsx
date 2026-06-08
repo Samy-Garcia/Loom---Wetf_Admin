@@ -46,7 +46,6 @@ function Login() {
         <div className="form-group">
           <label className="form-label">Correo electrónico</label>
           <div className="input-box">
-            <span className="input-icon">✉️</span>
             <input
               type="email"
               placeholder="tu@email.com"
@@ -59,7 +58,6 @@ function Login() {
         <div className="form-group">
           <label className="form-label">Contraseña</label>
           <div className="input-box">
-            <span className="input-icon">🔒</span>
             <input
               type={showPassword ? 'text' : 'password'}
               placeholder="••••••••"

@@ -13,7 +13,7 @@ const productSchema = new Schema({
     color: { type: String },
     size: { type: String },
     price: { type: Number },
-    stock: { type: Boolean },
+    stock: { type: Number },
     description: { type: String },
     supplier_id: {
         type: Schema.Types.ObjectId,

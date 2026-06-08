@@ -2,12 +2,11 @@ import { NavLink } from 'react-router-dom'
 import './Sidebar.css'
 
 const navItems = [
-  { path: '/analisis', label: 'Análisis', icon: '📊' },
-  { path: '/productos', label: 'Productos', icon: '📦' },
-  { path: '/ofertas', label: 'Ofertas', icon: '🏷️' },
-  { path: '/inventario', label: 'Inventario', icon: '🗃️' },
-  { path: '/proveedores', label: 'Proveedores', icon: '👥' },
-  { path: '/reviews', label: 'Reviews', icon: '⭐' },
+  { path: '/analisis', label: 'Análisis', icon: '' },
+  { path: '/productos', label: 'Productos', icon: '' },
+  { path: '/inventario', label: 'Inventario', icon: '' },
+  { path: '/proveedores', label: 'Proveedores', icon: '' },
+  { path: '/reviews', label: 'Reviews', icon: '' },
 ]
 
 function Sidebar() {
@@ -29,7 +28,6 @@ function Sidebar() {
         ))}
       </nav>
       <div className="sidebar-logout">
-        <span>🚪</span>
         <span>Cerrar Sesión</span>
       </div>
     </aside>
