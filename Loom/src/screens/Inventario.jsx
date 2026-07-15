@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import Sidebar from '../components/Sidebar'
 import Navbar from '../components/Navbar'
+import { FiUsers, FiPackage, FiAlertTriangle, FiHome, FiSearch, FiMenu } from 'react-icons/fi'
 import './Inventario.css'
 
 const API = 'http://localhost:4000/api'
@@ -70,7 +71,7 @@ function Inventario() {
           <div className="stats-grid-4">
             <div className="stat-card-p">
               <div className="stat-card-top">
-                <div className="stat-icon-box blue">👥</div>
+                <div className="stat-icon-box blue"><FiUsers /></div>
                 <span className="stat-dots">⋯</span>
               </div>
               <div className="stat-number-p">{loading ? '—' : totalStock}</div>
@@ -79,7 +80,7 @@ function Inventario() {
             </div>
             <div className="stat-card-p">
               <div className="stat-card-top">
-                <div className="stat-icon-box orange">📦</div>
+                <div className="stat-icon-box orange"><FiPackage /></div>
                 <span className="stat-dots">⋯</span>
               </div>
               <div className="stat-number-p">{loading ? '—' : agotados}</div>
@@ -88,7 +89,7 @@ function Inventario() {
             </div>
             <div className="stat-card-p">
               <div className="stat-card-top">
-                <div className="stat-icon-box orange">⚠️</div>
+                <div className="stat-icon-box orange"><FiAlertTriangle /></div>
                 <span className="stat-dots">⋯</span>
               </div>
               <div className="stat-number-p">{loading ? '—' : bajoInventario}</div>
@@ -97,7 +98,7 @@ function Inventario() {
             </div>
             <div className="stat-card-p">
               <div className="stat-card-top">
-                <div className="stat-icon-box blue">🏢</div>
+                <div className="stat-icon-box blue"><FiHome /></div>
                 <span className="stat-dots">⋯</span>
               </div>
               <div className="stat-number-p">{loading ? '—' : suppliers.length}</div>
@@ -113,7 +114,7 @@ function Inventario() {
             {/* Buscador y filtros */}
             <div className="inv-filtros">
               <div className="search-box">
-                <span>🔍</span>
+                <span><FiSearch /></span>
                 <input
                   type="text"
                   placeholder="Buscar producto..."
@@ -131,7 +132,7 @@ function Inventario() {
                     {cat}
                   </button>
                 ))}
-                <button className="cat-btn-icon">☰</button>
+                <button className="cat-btn-icon"><FiMenu /></button>
               </div>
             </div>
 
@@ -160,7 +161,7 @@ function Inventario() {
                             <div className="producto-img-box">
                               {p.images?.[0]?.image
                                 ? <img src={p.images[0].image} alt={p.name} style={{ width: 36, height: 36, objectFit: 'cover', borderRadius: 6 }} />
-                                : '📦'}
+                                : <FiPackage />}
                             </div>
                             <span className="producto-nombre">{p.name}</span>
                           </div>

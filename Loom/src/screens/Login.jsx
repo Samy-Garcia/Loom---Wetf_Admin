@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
+import { FiEye, FiEyeOff } from 'react-icons/fi'
 import './Login.css'
 
 function Login() {
@@ -65,7 +66,7 @@ function Login() {
               onChange={(e) => setPassword(e.target.value)}
             />
             <span className="input-icon-right" onClick={() => setShowPassword(!showPassword)}>
-              {showPassword ? '🙈' : '👁️'}
+              {showPassword ? <FiEyeOff /> : <FiEye />}
             </span>
           </div>
         </div>

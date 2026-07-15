@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import Sidebar from '../components/Sidebar'
 import Navbar from '../components/Navbar'
+import { FiX } from 'react-icons/fi'
 import './Categorias.css'
 
 function ModalForm({ titulo, initialName = '', initialSubs = [], onClose, onGuardar }) {
@@ -29,7 +30,7 @@ function ModalForm({ titulo, initialName = '', initialSubs = [], onClose, onGuar
       <div className="modal-card" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2>{titulo}</h2>
-          <button className="modal-close" onClick={onClose}>✕</button>
+          <button className="modal-close" onClick={onClose}><FiX /></button>
         </div>
         <div className="modal-body">
           <div className="form-group">

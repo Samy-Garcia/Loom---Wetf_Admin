@@ -5,6 +5,7 @@ import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer, BarChart, Bar
 } from 'recharts'
+import { FiTrendingUp, FiDollarSign, FiShoppingCart, FiPackage, FiShoppingBag, FiUser } from 'react-icons/fi'
 import './Analisis.css'
 
 const API = 'http://localhost:4000/api'
@@ -113,7 +114,7 @@ function Analisis() {
           <div className="stats-top">
             <div className="stat-card">
               <div className="stat-card-top">
-                <div className="stat-icon-box blue">📈</div>
+                <div className="stat-icon-box blue"><FiTrendingUp /></div>
                 <span className="stat-dots">⋯</span>
               </div>
               <div className="stat-card-label">Ventas del día</div>
@@ -125,7 +126,7 @@ function Analisis() {
 
             <div className="stat-card">
               <div className="stat-card-top">
-                <div className="stat-icon-box green">💲</div>
+                <div className="stat-icon-box green"><FiDollarSign /></div>
                 <span className="stat-dots">⋯</span>
               </div>
               <div className="stat-card-label">Ventas del mes</div>
@@ -139,7 +140,7 @@ function Analisis() {
 
             <div className="stat-card">
               <div className="stat-card-top">
-                <div className="stat-icon-box orange">🛒</div>
+                <div className="stat-icon-box orange"><FiShoppingCart /></div>
                 <span className="stat-dots">⋯</span>
               </div>
               <div className="stat-card-label">Pedidos en ruta</div>
@@ -186,7 +187,7 @@ function Analisis() {
                     <div className="sin-stock-img">
                       {p.images?.[0]?.image
                         ? <img src={p.images[0].image} alt={p.name} style={{ width: 36, height: 36, objectFit: 'cover', borderRadius: 6 }} />
-                        : '📦'}
+                        : <FiPackage />}
                     </div>
                     <div>
                       <div className="sin-stock-nombre">{p.name}</div>
@@ -220,7 +221,7 @@ function Analisis() {
                     <div className="prod-vendido-img">
                       {prod.images?.[0]?.image
                         ? <img src={prod.images[0].image} alt={prod.name} style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 8 }} />
-                        : '🛍️'}
+                        : <FiShoppingBag />}
                     </div>
                     <div className="prod-vendido-info">
                       <div className="prod-vendido-nombre">{prod.name}</div>
@@ -248,7 +249,7 @@ function Analisis() {
                 ultimosPedidos.map((ped, i) => (
                   <div key={i} className="pedido-row">
                     <div className="pedido-avatar">
-                      {ped.client?.name?.[0]?.toUpperCase() || '👤'}
+                      {ped.client?.name?.[0]?.toUpperCase() || <FiUser />}
                     </div>
                     <div className="pedido-info">
                       <div className="pedido-id">#{ped._id?.slice(-5).toUpperCase()}</div>

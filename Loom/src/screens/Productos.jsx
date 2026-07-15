@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import Sidebar from '../components/Sidebar'
 import Navbar from '../components/Navbar'
+import { FiX, FiSearch, FiDollarSign } from 'react-icons/fi'
 import './Productos.css'
 
 const estadoClass = {
@@ -63,7 +64,7 @@ function ModalCrear({ onClose, onGuardado }) {
       <div className="modal-card" onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h2>Nuevo Producto</h2>
-          <button className="modal-close" onClick={onClose}>✕</button>
+          <button className="modal-close" onClick={onClose}><FiX /></button>
         </div>
         <div className="modal-body">
           {[
@@ -158,7 +159,7 @@ function ModalEditar({ producto, onClose, onGuardado }) {
       <div className="modal-card" onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h2>Editar Producto</h2>
-          <button className="modal-close" onClick={onClose}>✕</button>
+          <button className="modal-close" onClick={onClose}><FiX /></button>
         </div>
         <div className="modal-body">
           {/* Preview imágenes actuales */}
@@ -265,7 +266,7 @@ function Productos() {
           </div>
 
           <div className="search-box-lg">
-            <span>🔍</span>
+            <span><FiSearch /></span>
             <input
               type="text"
               placeholder="Buscar producto..."
@@ -299,7 +300,7 @@ function Productos() {
             </div>
             <div className="stat-card-p">
               <div className="stat-card-top">
-                <div className="stat-icon-box blue">💲</div>
+                <div className="stat-icon-box blue"><FiDollarSign /></div>
               </div>
               <div className="stat-number-p">${valorInventario.toLocaleString()}</div>
               <div className="stat-label-p">Valor del Inventario</div>

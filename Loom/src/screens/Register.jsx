@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
+import { FiUser, FiMail, FiLock, FiKey, FiEye, FiEyeOff } from 'react-icons/fi'
 import './Login.css'
 
 function Register() {
@@ -101,7 +102,7 @@ function Register() {
             <div className="form-group">
               <label className="form-label">Nombre completo</label>
               <div className="input-box">
-                <span className="input-icon">👤</span>
+                <span className="input-icon"><FiUser /></span>
                 <input
                   type="text"
                   placeholder="Juan Pérez"
@@ -114,7 +115,7 @@ function Register() {
             <div className="form-group">
               <label className="form-label">Correo electrónico</label>
               <div className="input-box">
-                <span className="input-icon">✉️</span>
+                <span className="input-icon"><FiMail /></span>
                 <input
                   type="email"
                   placeholder="tu@email.com"
@@ -127,7 +128,7 @@ function Register() {
             <div className="form-group">
               <label className="form-label">Contraseña</label>
               <div className="input-box">
-                <span className="input-icon">🔒</span>
+                <span className="input-icon"><FiLock /></span>
                 <input
                   type={showPassword ? 'text' : 'password'}
                   placeholder="••••••••"
@@ -135,7 +136,7 @@ function Register() {
                   onChange={(e) => setPassword(e.target.value)}
                 />
                 <span className="input-icon-right" onClick={() => setShowPassword(!showPassword)}>
-                  {showPassword ? '🙈' : '👁️'}
+                  {showPassword ? <FiEyeOff /> : <FiEye />}
                 </span>
               </div>
             </div>
@@ -143,7 +144,7 @@ function Register() {
             <div className="form-group">
               <label className="form-label">Confirmar contraseña</label>
               <div className="input-box">
-                <span className="input-icon">🔒</span>
+                <span className="input-icon"><FiLock /></span>
                 <input
                   type={showConfirmar ? 'text' : 'password'}
                   placeholder="••••••••"
@@ -151,7 +152,7 @@ function Register() {
                   onChange={(e) => setConfirmar(e.target.value)}
                 />
                 <span className="input-icon-right" onClick={() => setShowConfirmar(!showConfirmar)}>
-                  {showConfirmar ? '🙈' : '👁️'}
+                  {showConfirmar ? <FiEyeOff /> : <FiEye />}
                 </span>
               </div>
             </div>
@@ -178,7 +179,7 @@ function Register() {
             <div className="form-group">
               <label className="form-label">Código de verificación</label>
               <div className="input-box">
-                <span className="input-icon">🔑</span>
+                <span className="input-icon"><FiKey /></span>
                 <input
                   type="text"
                   placeholder="Ingresa el código"

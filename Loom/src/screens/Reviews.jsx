@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { FiSearch, FiTrash2, FiStar } from 'react-icons/fi'
 import Sidebar from '../components/Sidebar'
 import Navbar from '../components/Navbar'
 import './Reviews.css'
@@ -7,7 +8,7 @@ function StarRating({ count }) {
   return (
     <div className="stars">
       {[1, 2, 3, 4, 5].map((star) => (
-        <span key={star} className={star <= count ? 'star filled' : 'star'}>★</span>
+        <FiStar key={star} className={star <= count ? 'star filled' : 'star'} />
       ))}
       <span className="ranking-num">{count}/5</span>
     </div>
@@ -20,25 +21,49 @@ function Reviews() {
   const [reviews, setReviews] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [eliminandoId, setEliminandoId] = useState(null)
+
+  const fetchReviews = async () => {
+    setLoading(true)
+    setError('')
+    try {
+      const res = await fetch('http://localhost:4000/api/generalReviews', {
+        credentials: 'include',
+      })
+      const data = await res.json()
+      setReviews(Array.isArray(data) ? data : [])
+    } catch (err) {
+      setError('No se pudieron cargar las reviews')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   useEffect(() => {
-    const fetchReviews = async () => {
-      setLoading(true)
-      setError('')
-      try {
-        const res = await fetch('http://localhost:4000/api/generalReviews', {
-          credentials: 'include',
-        })
-        const data = await res.json()
-        setReviews(Array.isArray(data) ? data : [])
-      } catch (err) {
-        setError('No se pudieron cargar las reviews')
-      } finally {
-        setLoading(false)
-      }
-    }
     fetchReviews()
   }, [])
+
+  const handleEliminar = async (review) => {
+    const id = review._id
+    if (!id) return
+    if (!confirm(`¿Eliminar la review "${review.title || review.titulo || ''}"?`)) return
+    setEliminandoId(id)
+    try {
+      const res = await fetch(`http://localhost:4000/api/generalReviews/${id}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      })
+      if (res.ok) {
+        setReviews((prev) => prev.filter((r) => r._id !== id))
+      } else {
+        setError('No se pudo eliminar la review')
+      }
+    } catch (err) {
+      setError('No se pudo eliminar la review')
+    } finally {
+      setEliminandoId(null)
+    }
+  }
 
   const filtered = reviews.filter(
     (r) =>
@@ -71,7 +96,7 @@ function Reviews() {
             </div>
 
             <div className="search-box">
-              <span className="search-icon">🔍</span>
+              <span className="search-icon"><FiSearch /></span>
               <input
                 type="text"
                 placeholder={activeTab === 'generales' ? 'Buscar review general...' : 'Buscar review de producto...'}
@@ -92,12 +117,13 @@ function Reviews() {
                     <th>EXPERIENCIA</th>
                     <th>TIPO</th>
                     <th>DETALLES</th>
+                    <th>ACCIONES</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filtered.length === 0 ? (
                     <tr>
-                      <td colSpan="5" className="empty-msg">No hay reviews disponibles</td>
+                      <td colSpan="6" className="empty-msg">No hay reviews disponibles</td>
                     </tr>
                   ) : (
                     filtered.map((review, i) => (
@@ -111,6 +137,16 @@ function Reviews() {
                           </span>
                         </td>
                         <td>{review.details || review.detalles}</td>
+                        <td>
+                          <button
+                            className="btn-eliminar-review"
+                            onClick={() => handleEliminar(review)}
+                            disabled={eliminandoId === review._id}
+                            title="Eliminar review"
+                          >
+                            <FiTrash2 />
+                          </button>
+                        </td>
                       </tr>
                     ))
                   )}

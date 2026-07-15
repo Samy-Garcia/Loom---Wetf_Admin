@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import Sidebar from '../components/Sidebar'
 import Navbar from '../components/Navbar'
+import { FiX, FiStar } from 'react-icons/fi'
 import './Proveedores.css'
 
 const estadoClass = {
@@ -59,7 +60,7 @@ function ModalAgregar({ onClose, onGuardado }) {
       <div className="modal-card" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2>Añadir Proveedor</h2>
-          <button className="modal-close" onClick={onClose}>✕</button>
+          <button className="modal-close" onClick={onClose}><FiX /></button>
         </div>
         <div className="modal-body">
           {['name', 'email', 'phone', 'address', 'company'].map((field) => (
@@ -140,7 +141,7 @@ function ModalEditar({ proveedor, onClose, onGuardado }) {
       <div className="modal-card" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2>Editar Proveedor</h2>
-          <button className="modal-close" onClick={onClose}>✕</button>
+          <button className="modal-close" onClick={onClose}><FiX /></button>
         </div>
         <div className="modal-body">
           {['name', 'email', 'phone', 'address', 'company'].map((field) => (
@@ -350,8 +351,8 @@ function Proveedores() {
                       </span>
                     </div>
                     <div className="eval-stars">
-                      {'★★★★★'.split('').map((s, i) => (
-                        <span key={i} className="star filled">{s}</span>
+                      {[1, 2, 3, 4, 5].map((i) => (
+                        <FiStar key={i} className="star filled" />
                       ))}
                       <span className="eval-pct">{seleccionado.rating || 90}%</span>
                     </div>

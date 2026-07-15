@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import Sidebar from '../components/Sidebar'
 import Navbar from '../components/Navbar'
+import { FiX } from 'react-icons/fi'
 import './Usuarios.css'
 
 const ENDPOINTS = {
@@ -48,7 +49,7 @@ function ModalEditar({ tipo, usuario, onClose, onGuardado }) {
       <div className="modal-card" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2>Editar {tipo === 'clientes' ? 'Cliente' : 'Empleado'}</h2>
-          <button className="modal-close" onClick={onClose}>✕</button>
+          <button className="modal-close" onClick={onClose}><FiX /></button>
         </div>
         <div className="modal-body">
           {campos.map((field) => (

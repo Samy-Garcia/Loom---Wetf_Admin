@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import Sidebar from '../components/Sidebar'
 import Navbar from '../components/Navbar'
+import { FiUser, FiStar, FiShoppingBag, FiChevronLeft, FiChevronRight } from 'react-icons/fi'
 import './Ofertas.css'
 
 const ofertas = [
-  { id: 1, codigo: 'LOOM10', descripcion: '10% OFF', tipo: '10%', inicio: '20 Apr 2024', fin: '30 Apr 2024', avatar: '👩' },
-  { id: 2, codigo: 'SPRING SALE', descripcion: '15% OFF', tipo: '15%', inicio: '1 May 2024', fin: '10 May 2024', avatar: '👩' },
-  { id: 3, codigo: 'LIQUIDACION', descripcion: '-20% OFF gran', tipo: '-20%', inicio: '1 May 2024', fin: '10 May 2024', avatar: '👨' },
+  { id: 1, codigo: 'LOOM10', descripcion: '10% OFF', tipo: '10%', inicio: '20 Apr 2024', fin: '30 Apr 2024' },
+  { id: 2, codigo: 'SPRING SALE', descripcion: '15% OFF', tipo: '15%', inicio: '1 May 2024', fin: '10 May 2024' },
+  { id: 3, codigo: 'LIQUIDACION', descripcion: '-20% OFF gran', tipo: '-20%', inicio: '1 May 2024', fin: '10 May 2024' },
 ]
 
 const productosOferta = [
@@ -42,7 +43,7 @@ function Ofertas() {
 
           {/* Banner */}
           <div className="banner">
-            <div className="banner-stars">✦ ✦ ✦</div>
+            <div className="banner-stars"><FiStar /><FiStar /><FiStar /></div>
             <h1 className="banner-title">LIQUIDACIÓN 20% OFF</h1>
             <p className="banner-sub">¡Gran remate en toda la tienda! Aprovecha nuestras ofertas antes de que acaben.</p>
             <button className="banner-btn">Ver productos en oferta</button>
@@ -72,7 +73,7 @@ function Ofertas() {
                     <tr key={oferta.id}>
                       <td>
                         <div className="oferta-info">
-                          <div className="avatar">{oferta.avatar}</div>
+                          <div className="avatar"><FiUser /></div>
                           <div>
                             <div className="oferta-codigo">{oferta.codigo}</div>
                             <div className="oferta-desc">{oferta.descripcion}</div>
@@ -94,7 +95,7 @@ function Ofertas() {
 
               {/* Paginación */}
               <div className="paginacion">
-                <button onClick={() => setPagina(p => Math.max(1, p - 1))} disabled={pagina === 1}>←</button>
+                <button onClick={() => setPagina(p => Math.max(1, p - 1))} disabled={pagina === 1}><FiChevronLeft /></button>
                 {Array.from({ length: totalPaginas }, (_, i) => (
                   <button
                     key={i + 1}
@@ -104,7 +105,7 @@ function Ofertas() {
                     {i + 1}
                   </button>
                 ))}
-                <button onClick={() => setPagina(p => Math.min(totalPaginas, p + 1))} disabled={pagina === totalPaginas}>→</button>
+                <button onClick={() => setPagina(p => Math.min(totalPaginas, p + 1))} disabled={pagina === totalPaginas}><FiChevronRight /></button>
               </div>
             </div>
 
@@ -118,7 +119,7 @@ function Ofertas() {
                   {productosOferta.map((prod, i) => (
                     <div key={i} className="prod-card">
                       <div className="prod-badge">{prod.descuento}</div>
-                      <div className="prod-img">👕</div>
+                      <div className="prod-img"><FiShoppingBag /></div>
                       <div className="prod-nombre">{prod.nombre}</div>
                       <div className="prod-precio">{prod.precio}</div>
                       {prod.precioAntes && <div className="prod-antes">{prod.precioAntes}</div>}
@@ -135,7 +136,7 @@ function Ofertas() {
                 </div>
                 {inventarioBajo.map((item, i) => (
                   <div key={i} className="inv-row">
-                    <div className="inv-img">👕</div>
+                    <div className="inv-img"><FiShoppingBag /></div>
                     <div className="inv-info">
                       <div className="inv-nombre">{item.nombre}</div>
                       <div className="inv-sub">{item.unidades} {item.descuento && `• ${item.descuento}`}</div>

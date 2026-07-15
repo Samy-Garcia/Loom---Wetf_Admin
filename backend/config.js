@@ -18,4 +18,25 @@ export const config = {
     },
 };
 
+// Aviso claro en consola si falta alguna variable critica.
+// Sin JWT_SECRET_KEY, el login y el registro fallan con "Internal server error"
+// porque jsonwebtoken.sign() no puede firmar el token.
+const requiredVars = {
+    JWT_SECRET_KEY: config.JWT.secret,
+    USER_EMAIL: config.email.user_email,
+    USER_PASSWORD: config.email.user_password,
+};
+
+const missing = Object.entries(requiredVars)
+    .filter(([, value]) => !value)
+    .map(([key]) => key);
+
+if (missing.length > 0) {
+    console.warn(
+        "\nFaltan variables de entorno en tu archivo .env: " + missing.join(", ") +
+        "\nCopia backend/.env.example como backend/.env y completalo." +
+        "\nSin JWT_SECRET_KEY, el login y el registro fallaran con 'Internal server error'.\n"
+    );
+}
+
 export default config;
