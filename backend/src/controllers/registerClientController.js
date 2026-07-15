@@ -145,4 +145,59 @@ registerClientController.verifyCode = async (req, res) => {
     }
 }
 
+// GET /api/registerClient - listar todos los clientes (uso administrativo)
+registerClientController.getAll = async (req, res) => {
+    try {
+        const clients = await clientModel.find().select("-password");
+        res.status(200).json(clients);
+    } catch (error) {
+        console.log("error getAll clients:", error);
+        res.status(500).json({ message: "Error al obtener los clientes" });
+    }
+};
+
+// GET /api/registerClient/:id
+registerClientController.getById = async (req, res) => {
+    try {
+        const client = await clientModel.findById(req.params.id).select("-password");
+        if (!client) return res.status(404).json({ message: "Cliente no encontrado" });
+        res.status(200).json(client);
+    } catch (error) {
+        console.log("error getById client:", error);
+        res.status(500).json({ message: "Error al obtener el cliente" });
+    }
+};
+
+// PUT /api/registerClient/:id - actualizar datos del cliente (uso administrativo)
+registerClientController.update = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, lastName, email, phone, address, isActive, isVerified } = req.body;
+
+        const updated = await clientModel.findByIdAndUpdate(
+            id,
+            { name, lastName, email, phone, address, isActive, isVerified },
+            { new: true }
+        ).select("-password");
+
+        if (!updated) return res.status(404).json({ message: "Cliente no encontrado" });
+        res.status(200).json({ message: "Cliente actualizado", client: updated });
+    } catch (error) {
+        console.log("error update client:", error);
+        res.status(500).json({ message: "Error al actualizar el cliente" });
+    }
+};
+
+// DELETE /api/registerClient/:id
+registerClientController.delete = async (req, res) => {
+    try {
+        const deleted = await clientModel.findByIdAndDelete(req.params.id);
+        if (!deleted) return res.status(404).json({ message: "Cliente no encontrado" });
+        res.status(200).json({ message: "Cliente eliminado exitosamente" });
+    } catch (error) {
+        console.log("error delete client:", error);
+        res.status(500).json({ message: "Error al eliminar el cliente" });
+    }
+};
+
 export default registerClientController;

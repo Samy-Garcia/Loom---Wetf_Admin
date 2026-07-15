@@ -1,4 +1,5 @@
 import product from "../models/product.js";
+import { v2 as cloudinary } from "cloudinary";
 
 const productController = {};
 
@@ -69,8 +70,10 @@ productController.deleteProduct = async (req, res) => {
             return res.status(404).json({ message: "Producto no encontrado" });
         }
 
-         // Eliminar la imagen de Cloudinary
-        await cloudinary.uploader.destroy(productDeleted.images[0].public_id);
+         // Eliminar la imagen de Cloudinary (si existe)
+        if (productDeleted.images && productDeleted.images.length > 0 && productDeleted.images[0].public_id) {
+            await cloudinary.uploader.destroy(productDeleted.images[0].public_id);
+        }
 
         res.status(200).json({ message: "Producto eliminado exitosamente" });
     } catch (error) {

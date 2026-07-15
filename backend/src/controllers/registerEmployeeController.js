@@ -138,4 +138,59 @@ registerEmployeeController.verifyCode = async (req, res) => {
     }
 }
 
+// GET /api/registerEmployee - listar todos los empleados (uso administrativo)
+registerEmployeeController.getAll = async (req, res) => {
+    try {
+        const employees = await employeeModel.find().select("-password");
+        res.status(200).json(employees);
+    } catch (error) {
+        console.log("error getAll employees:", error);
+        res.status(500).json({ message: "Error al obtener los empleados" });
+    }
+};
+
+// GET /api/registerEmployee/:id
+registerEmployeeController.getById = async (req, res) => {
+    try {
+        const employee = await employeeModel.findById(req.params.id).select("-password");
+        if (!employee) return res.status(404).json({ message: "Empleado no encontrado" });
+        res.status(200).json(employee);
+    } catch (error) {
+        console.log("error getById employee:", error);
+        res.status(500).json({ message: "Error al obtener el empleado" });
+    }
+};
+
+// PUT /api/registerEmployee/:id - actualizar datos del empleado (uso administrativo)
+registerEmployeeController.update = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, email, address, phone, salary, isVerified } = req.body;
+
+        const updated = await employeeModel.findByIdAndUpdate(
+            id,
+            { name, email, address, phone, salary, isVerified },
+            { new: true }
+        ).select("-password");
+
+        if (!updated) return res.status(404).json({ message: "Empleado no encontrado" });
+        res.status(200).json({ message: "Empleado actualizado", employee: updated });
+    } catch (error) {
+        console.log("error update employee:", error);
+        res.status(500).json({ message: "Error al actualizar el empleado" });
+    }
+};
+
+// DELETE /api/registerEmployee/:id
+registerEmployeeController.delete = async (req, res) => {
+    try {
+        const deleted = await employeeModel.findByIdAndDelete(req.params.id);
+        if (!deleted) return res.status(404).json({ message: "Empleado no encontrado" });
+        res.status(200).json({ message: "Empleado eliminado exitosamente" });
+    } catch (error) {
+        console.log("error delete employee:", error);
+        res.status(500).json({ message: "Error al eliminar el empleado" });
+    }
+};
+
 export default registerEmployeeController;
